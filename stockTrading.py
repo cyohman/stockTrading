@@ -7,6 +7,11 @@ local_Minimum_Date = datetime.datetime(2020, 3, 23)
 
 print(local_Minimum_Date)
 
+with open('symbols') as symbolsFile:
+    symbols = symbolsFile.read().splitlines()
+
+print(symbols)
+
 os.environ["TIINGO_API_KEY"]="e64599a94ac46e01331bbe02499e7fd8cb7b8e84"
 df = pdr.get_data_tiingo('GOOG', api_key=os.getenv('TIINGO_API_KEY'))
 print(df.columns)
