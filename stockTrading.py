@@ -10,6 +10,10 @@ print(local_Minimum_Date)
 with open('symbols') as symbolsFile:
     symbols = symbolsFile.read().splitlines()
 
+symbols = sorted(symbols, key=str.upper)
+
+#2020.05.01, cey, Remove the duplicate symbols
+
 #2020.04.30, cey, Read in symbols, alphabetize, and remove duplicates
 print(symbols)
 
