@@ -13,6 +13,9 @@ with open('symbols') as symbolsFile:
 symbols = sorted(symbols, key=str.upper)
 
 #2020.05.01, cey, Remove the duplicate symbols
+symbols = list(dict.fromkeys(symbols))
+
+#2020.05.02, cey, Output the symbols to the original list
 
 #2020.04.30, cey, Read in symbols, alphabetize, and remove duplicates
 print(symbols)
