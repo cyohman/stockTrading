@@ -1,13 +1,15 @@
 import os
 import pandas_datareader as pdr
 import pandas as pd
+from datetime import datetime
 from datetime import date
+import csv
 
 local_Minimum_Date = date(2020, 3, 23)
 
 print(local_Minimum_Date)
 
-with open('symbols') as symbolsFile:
+with open('symbols', 'r', newline='') as symbolsFile:
     symbols = symbolsFile.read().splitlines()
 
 symbols = sorted(symbols, key=str.upper)
@@ -16,6 +18,18 @@ symbols = sorted(symbols, key=str.upper)
 symbols = list(dict.fromkeys(symbols))
 
 #2020.05.02, cey, Output the symbols to the original list
+os.rename('symbols', 'old_symbol_lists/symbols_'+datetime.now().strftime("%m-%d-%Y_%H:%M"))
+
+print(symbols)
+
+newSymbolsFile=open('symbols','w')
+
+for element in symbols:
+     print(element)
+     newSymbolsFile.write(element)
+     newSymbolsFile.write('\n')
+
+newSymbolsFile.close()
 
 #2020.04.30, cey, Read in symbols, alphabetize, and remove duplicates
 print(symbols)
