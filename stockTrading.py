@@ -44,7 +44,10 @@ for symbol in symbols:
 	for row in df.index:
 	       print(i)
 	       symbol = row[0]
+	       print(symbol)
 	       date = row[1].date()
+	       print(date)
+	       print(df.loc[row])
 	       cur= conn.execute('SELECT COUNT(*) FROM stocks WHERE symbol=:symbol and date=:date', {"symbol": symbol, "date":  date})
 	       if (cur.fetchone()[0] > 0):
 	          print("Entry found")
