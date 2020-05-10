@@ -47,14 +47,23 @@ for symbol in symbols:
 	       print(symbol)
 	       date = row[1].date()
 	       print(date)
-	       print(df.loc[row])
-	       cur= conn.execute('SELECT COUNT(*) FROM stocks WHERE symbol=:symbol and date=:date', {"symbol": symbol, "date":  date})
+	       #print(df.loc[row].close)
+               #c = conn.cursor()
+	       cur = conn.execute('SELECT COUNT(*) FROM stocks WHERE symbol=:symbol and date=:date', {"symbol": symbol, "date":  date})
+	       
 	       if (cur.fetchone()[0] > 0):
 	          print("Entry found")
 	       else:
-		  #print df[row]
 	          print("No entry found")
-	          #entry = [(date, symbol,
-                  #conn.execute('INSERT INTO stocks value(?,?,?)', 
+	          entry = [date, symbol, df.loc[row].close]
+	          print(entry)
+	          cur = conn.cursor() 
+	          cur.execute('INSERT INTO stocks VALUES(?,?,?)',entry)
+	          print(cur.lastrowid)
+	          conn.commit()
+		  #print(*entry)
+                  #conn.execute('INSERT INTO stocks value(?,?,?)',entry)
+		  #print(entry)
+                  #conn.execute('INSERT INTO stocks value(?,?,?)',entry)
 
 #2020.04.30, cey, Store data in database
