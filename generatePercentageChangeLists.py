@@ -2,8 +2,10 @@ import os
 from datetime import date
 from datetime import datetime
 import sqlite3
+from pathlib import Path
 
 local_Minimum_Date = date(2020, 3, 23)
+path=os.getcwd()
 
 with open('symbols', 'r', newline='') as symbolsFile:
     symbols = symbolsFile.read().splitlines()
@@ -32,6 +34,7 @@ for symbol in symbols:
 
 	currentDate=datetime.strptime(rows[0][0], "%Y-%m-%d").date()
 	print(currentDate)
+	
 	currentPrice=rows[0][2]
 	print(currentPrice)
 	
@@ -43,6 +46,7 @@ for symbol in symbols:
 	
 	for row in rows:
         	print(row)
+	        
 	        date=datetime.strptime(row[0], "%Y-%m-%d").date()
 	        print(date)
 	        
@@ -56,3 +60,19 @@ for symbol in symbols:
 
 	        percentageChange = priceDelta / currentPrice
 	        print(percentageChange)
+
+	        savePath = path + "/percentageChanges/"+row[0]
+	        print(savePath)
+
+	        #Path(savePath).touch()	       
+                
+	        if os.path.exists(savePath):
+                   append_write = 'a' # append if already exists
+	        else:
+                   append_write = 'w' # make a new file if not
+	
+	        print(append_write)
+	        
+	        with open(savePath, append_write) as percentageGainFile:
+	           percentageGainFile.write(symbol+","+str(percentageChange)+"\n")
+	           percentageGainFile.close()	
