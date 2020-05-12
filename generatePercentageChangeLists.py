@@ -7,6 +7,15 @@ from pathlib import Path
 local_Minimum_Date = date(2020, 3, 23)
 path=os.getcwd()
 
+#2020.05.12, cey, Add the hour, minute, and second to the folder in 24 hour time
+savePath = path+"/"+datetime.now().strftime("%m-%d-%Y_%H%M%S")+"/";
+os.mkdir(savePath);
+print("The save root directory is %s" % savePath)
+savePath = savePath+"percentageChanges/";
+os.mkdir(savePath);
+print ("The save directory is %s" % savePath)
+
+
 with open('symbols', 'r', newline='') as symbolsFile:
     symbols = symbolsFile.read().splitlines()
 
@@ -61,8 +70,8 @@ for symbol in symbols:
 	        percentageChange = priceDelta / currentPrice
 	        print(percentageChange)
 
-	        savePath = path + "/percentageChanges/"+row[0]
-	        print(savePath)
+	        finalSavePath = savePath+row[0]
+	        print(finalSavePath)
 
 	        #Path(savePath).touch()	       
                 
@@ -73,6 +82,6 @@ for symbol in symbols:
 	
 	        print(append_write)
 	        
-	        with open(savePath, append_write) as percentageGainFile:
+	        with open(finalSavePath, append_write) as percentageGainFile:
 	           percentageGainFile.write(symbol+","+str(percentageChange)+"\n")
 	           percentageGainFile.close()	
