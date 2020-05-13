@@ -2,9 +2,10 @@ import os
 import pandas_datareader as pdr
 import pandas as pd
 from datetime import datetime
-from datetime import date
+from datetime import date, timedelta
 import csv
 import sqlite3
+from dateutil.relativedelta import relativedelta
 
 local_Minimum_Date = date(2020, 3, 23)
 
@@ -17,7 +18,7 @@ symbols = sorted(symbols, key=str.upper)
 symbols = list(dict.fromkeys(symbols))
 
 #2020.05.02, cey, Output the symbols to the original list
-os.rename('symbols', 'old_symbol_lists/symbols_'+datetime.now().strftime("%m-%d-%Y_%H:%M"))
+os.rename('symbols', 'old_symbol_lists/symbols_'+datetime.now().strftime("%m-%d-%Y_%H:%M:%S"))
 
 newSymbolsFile=open('symbols','w')
 
@@ -33,8 +34,14 @@ os.environ["TIINGO_API_KEY"]="e64599a94ac46e01331bbe02499e7fd8cb7b8e84"
 
 conn = sqlite3.connect('stocks.db')
 
+#2020.05.11, cey, Rewrite this so we are only calling tiingo when we need data
 for symbol in symbols:
-	df = pdr.get_data_tiingo(symbol, local_Minimum_Date, date.today(), api_key=os.getenv('TIINGO_API_KEY'))
+
+	oneYearAgo = date.today() - timedelta(365)
+	print('Current Date :',date.today())
+	print('365 days before Current Date :',oneYearAgo)
+
+	df = pdr.get_data_tiingo(symbol, oneYearAgo, date.today(), api_key=os.getenv('TIINGO_API_KEY'))
 	
 	for row in df.index:
 	       symbol = row[0]
