@@ -25,7 +25,7 @@ symbols = sorted(symbols, key=str.upper)
 symbols = list(dict.fromkeys(symbols))
 
 #2020.05.02, cey, Output the symbols to the original list
-os.rename('symbols', 'old_symbol_lists/symbols_'+datetime.now().strftime("%m-%d-%Y_%H:%M"))
+os.rename('symbols', 'old_symbol_lists/symbols_'+datetime.now().strftime("%m-%d-%Y_%H:%M%S"))
 
 newSymbolsFile=open('symbols','w')
 
@@ -67,10 +67,10 @@ for symbol in symbols:
 	        priceDelta = currentPrice - row[2]
 	        print(priceDelta)
 
-	        percentageChange = priceDelta / currentPrice
+	        percentageChange = priceDelta / row[2]
 	        print(percentageChange)
 
-	        finalSavePath = savePath+row[0]
+	        finalSavePath = savePath+str(delta.days)
 	        print(finalSavePath)
 
 	        #Path(savePath).touch()	       

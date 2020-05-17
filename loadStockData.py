@@ -6,6 +6,7 @@ from datetime import date, timedelta
 import csv
 import sqlite3
 from dateutil.relativedelta import relativedelta
+import pandas_market_calendars as mcal
 
 local_Minimum_Date = date(2020, 3, 23)
 
@@ -34,16 +35,51 @@ os.environ["TIINGO_API_KEY"]="e64599a94ac46e01331bbe02499e7fd8cb7b8e84"
 
 conn = sqlite3.connect('stocks.db')
 
+nyse = mcal.get_calendar('NYSE')
+
+oneYearAgo = date.today() - timedelta(52*7)
+print('Current Date :',date.today())
+print('365 days before Current Date :',oneYearAgo)
+
+valid_days = nyse.valid_days(start_date=oneYearAgo, end_date=date.today())
+print(valid_days)
+
+#for day in valid_days:
+#    print(day.date())
+
 #2020.05.11, cey, Rewrite this so we are only calling tiingo when we need data
 for symbol in symbols:
 
-	oneYearAgo = date.today() - timedelta(365)
-	print('Current Date :',date.today())
-	print('365 days before Current Date :',oneYearAgo)
+	print(symbol)	
 
-	df = pdr.get_data_tiingo(symbol, oneYearAgo, date.today(), api_key=os.getenv('TIINGO_API_KEY'))
+	minDate = date.min
+	print(minDate)
+	maxDate = date.max
+	print(maxDate)
+
+	for datetime in valid_days:
+	   print(datetime.date())
+
+	   cur = conn.execute('SELECT COUNT(*) FROM stocks WHERE symbol=:symbol and date=:date', {"symbol": symbol, "date":  datetime.date()})
 	
-	for row in df.index:
+	   if (cur.fetchone()[0] > 0):
+	      print("Entry found")
+	   else:
+	      print("No entry found")
+	      if minDate==date.min:
+	         minDate = datetime.date()
+	         maxDate = datetime.date()
+	      else:
+	         maxDate = datetime.date()
+	
+	print(minDate)
+	print(maxDate)
+
+	if minDate!=date.min:
+	   #2020.05.17, cey, Query database first
+	   df = pdr.get_data_tiingo(symbol, minDate, maxDate, api_key=os.getenv('TIINGO_API_KEY'))
+	
+	   for row in df.index:
 	       symbol = row[0]
 	       date = row[1].date()
 	       cur = conn.execute('SELECT COUNT(*) FROM stocks WHERE symbol=:symbol and date=:date', {"symbol": symbol, "date":  date})
