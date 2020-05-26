@@ -38,8 +38,13 @@ newSymbolsFile.close()
 conn = sqlite3.connect('stocks.db')
 
 for symbol in symbols:
+	
+	print(symbol)
+
 	cur = conn.execute('SELECT * FROM stocks WHERE symbol=:symbol order by date DESC', {"symbol": symbol})
 	rows = cur.fetchall()
+	print(rows)
+	print(len(rows))
 
 	currentDate=datetime.strptime(rows[0][0], "%Y-%m-%d").date()
 	print(currentDate)
