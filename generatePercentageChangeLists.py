@@ -75,7 +75,7 @@ for symbol in symbols:
 	        percentageChange = priceDelta / row[2]
 	        print(percentageChange)
 
-	        finalSavePath = savePath+str(delta.days)
+	        finalSavePath = savePath+str(delta.days)+"-"+str(date)
 	        print(finalSavePath)
 
 	        #Path(savePath).touch()	       
