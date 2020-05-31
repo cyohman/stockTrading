@@ -37,11 +37,11 @@ conn = sqlite3.connect('stocks.db')
 
 nyse = mcal.get_calendar('NYSE')
 
-oneYearAgo = date.today() - timedelta(52*7)
+fiftyFiveWeeksAgo = date.today() - timedelta(55*7)
 print('Current Date :',date.today())
-print('365 days before Current Date :',oneYearAgo)
+print('55 Weeks Ago Before Current Date :', fiftyFiveWeeksAgo)
 
-valid_days = nyse.valid_days(start_date=oneYearAgo, end_date=date.today())
+valid_days = nyse.valid_days(start_date=fiftyFiveWeeksAgo, end_date=date.today())
 print(valid_days)
 
 #for day in valid_days:
