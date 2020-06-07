@@ -75,7 +75,7 @@ for symbol in symbols:
 	        percentageChange = priceDelta / row[2]
 	        print(percentageChange)
 
-	        finalSavePath = savePath+str(delta.days)+"-"+str(date)+".csv"
+	        finalSavePath = savePath+str(delta.days).zfill(3)+"-"+str(date)+".csv"
 	        print(finalSavePath)
 
 	        #Path(savePath).touch()	       
