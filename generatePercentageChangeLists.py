@@ -6,6 +6,7 @@ from pathlib import Path
 import operator
 import csv
 import sys
+import pandas as pd
 
 local_Minimum_Date = date(2020, 3, 23)
 path=os.getcwd()
@@ -40,8 +41,8 @@ newSymbolsFile.close()
 
 conn = sqlite3.connect('stocks.db')
 
-conn.execute('''CREATE TABLE percentageChanges
-             (dayDelta int, date text,  symbol text, percentageChange real, PRIMARY KEY(dayDelta, symbol))''')
+column_names = ["daysDelta", "date", "symbol", "percentageChange"]
+percentageChangesDf = pd.DataFrame(columns = column_names)
 
 for symbol in symbols:
 	
@@ -63,7 +64,7 @@ for symbol in symbols:
 
 	rows = rows[1:length-1]
 	print(rows)	
-	
+
 	for row in rows:
         	print(row)
 	        
@@ -81,69 +82,20 @@ for symbol in symbols:
 	        percentageChange = priceDelta / row[2]
 	        print(percentageChange)
 
-	        entry = [delta.days, date, symbol, percentageChange]
+	        new_row = {'daysDelta': delta.days, 'date': date, 'symbol': symbol, 'percentageChange': percentageChange}
+	        percentageChangesDf = percentageChangesDf.append(new_row, ignore_index=True)
+		
+daysDeltas = percentageChangesDf.daysDelta.unique()
+print(daysDeltas)
 
-	        cur = conn.cursor()
-	        cur.execute('INSERT INTO percentageChanges VALUES(?,?,?,?)',entry)
-	        conn.commit()
-
-		#if delta.days-1<55*7:
-		#	percentageChanges[delta.days-1].append((symbol, percentageChange))
-		        	
-
-	        #finalSavePath = savePath+str(delta.days).zfill(3)+"-"+str(date)+".csv"
-	        #print(finalSavePath)
-
-	        #Path(savePath).touch()	       
-                
-	        #if os.path.exists(savePath):
-                #   append_write = 'a' # append if already exists
-	        #else:
-                #   append_write = 'w' # make a new file if not
+for daysDelta in daysDeltas:
+	daysDeltaDf = percentageChangesDf[percentageChangesDf['daysDelta']==daysDelta]
 	
-	        #print(append_write)
-	        
-	        #with open(finalSavePath, append_write) as percentageGainFile:
-	        #   percentageGainFile.write(symbol+","+str(percentageChange)+"\n")
-	        #   percentageGainFile.close()
-
-cur = conn.execute('SELECT DISTINCT dayDelta FROM percentageChanges')
-rows = cur.fetchall()
-print(rows)
-print(len(rows))
-
-for row in rows:
-	cur = conn.execute('SELECT date, symbol, percentageChange FROM percentageChanges WHERE dayDelta=:dayDelta ORDER BY percentageChange DESC', {"dayDelta": row[0]})
-	rows2 = cur.fetchall()
-	finalSavePath = savePath+str(row[0]).zfill(3)+"-"+str(rows2[0][0])+".csv"
+	finalSavePath = savePath+str(daysDelta).zfill(3)+"-"+str(daysDeltaDf.iloc[0]['date'])+".csv"
 	print(finalSavePath)
+
+	daysDeltaDf = daysDeltaDf.sort_values('percentageChange', ascending=False)
 	
 	with open(finalSavePath, 'w') as percentageGainFile:
-                for row2 in rows2:
-	                 percentageGainFile.write(row2[1]+","+str(row2[2])+"\n")
-        
-	percentageGainFile.close()
-
-conn.execute('''DROP TABLE percentageChanges''')
-
-#print(percentageChanges)
-
-#lengthOfPercentageChanges = length(percentageChagnes)
-#days=percentagesChanges[0:lengthOfPercentagesChanges-2]
-
-#i = 0
-
-#for day in days:
-#	day.sort(key=lambda x:x[1])
-#	for symbol in day:
-#		finalSavePath = savePath+str(i).zfill(3)+"-"+str(date)+".csv"		
-
-#directory = os.fsencode(savePath)
-
-#for file in os.listdir(directory):
-#     filename = os.fsdecode(file)
-#     fullFilePath=os.path.join(directory, filename)
-#     print(fullFilePath)
-#     reader = csv.reader(open(fullFilePath), delimiter=",")
-#     sortedlist = sorted(reader, key=operator.itemgetter(1), reverse=True)
-#     print(sortedList)
+                for index, row in daysDeltaDf.iterrows():
+	                 percentageGainFile.write(row['symbol']+","+str(row['percentageChange'])+"\n")
