@@ -31,7 +31,7 @@ newSymbolsFile.close()
 
 #2020.04.30, cey, Read in symbols, alphabetize, and remove duplicates
 
-os.environ["TIINGO_API_KEY"]="e64599a94ac46e01331bbe02499e7fd8cb7b8e84"
+os.environ["TIINGO_API_KEY"]="KEYOBSCURED"
 
 conn = sqlite3.connect('stocks.db')
 
